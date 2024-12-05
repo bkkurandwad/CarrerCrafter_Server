@@ -4,8 +4,16 @@ public class Register {
     private String name;
     private String email;
     private String password;
-    private int year;
-    private String branch;
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    private String username;
     private int phn_no;
 
     public String getName() {
@@ -30,22 +38,6 @@ public class Register {
 
     public void setPassword(String password) {
         this.password = password;
-    }
-
-    public int getYear() {
-        return year;
-    }
-
-    public void setYear(int year) {
-        this.year = year;
-    }
-
-    public String getBranch() {
-        return branch;
-    }
-
-    public void setBranch(String branch) {
-        this.branch = branch;
     }
 
     public int getPhn_no() {

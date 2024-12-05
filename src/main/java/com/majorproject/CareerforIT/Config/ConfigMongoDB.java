@@ -6,7 +6,6 @@ import com.mongodb.client.MongoDatabase;
 import jakarta.annotation.PreDestroy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class ConfigMongoDB {
@@ -20,7 +19,9 @@ public class ConfigMongoDB {
     // Bean for MongoDatabase
     @Bean
     public MongoDatabase mongoDatabase() {
-        mongoClient = MongoClients.create(CONNECTION_STRING); // Create the client
+        if (mongoClient == null) {
+            mongoClient = MongoClients.create(CONNECTION_STRING); // Create the client if not already created
+        }
         return mongoClient.getDatabase(DATABASE_NAME);        // Return the database instance
     }
 
