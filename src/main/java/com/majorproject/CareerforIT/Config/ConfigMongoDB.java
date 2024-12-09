@@ -6,12 +6,11 @@ import com.mongodb.client.MongoDatabase;
 import jakarta.annotation.PreDestroy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import jakarta.annotation.PostConstruct;
 
 @Configuration
 public class ConfigMongoDB {
 
-    private static final String CONNECTION_STRING = "mongodb://localhost:27017";
+    private static final String CONNECTION_STRING = "mongo_db_url";
     private static final String DATABASE_NAME = "Career_Crafter";
 
     // Instance variable for MongoDB client
@@ -20,7 +19,9 @@ public class ConfigMongoDB {
     // Bean for MongoDatabase
     @Bean
     public MongoDatabase mongoDatabase() {
-        mongoClient = MongoClients.create(CONNECTION_STRING); // Create the client
+        if (mongoClient == null) {
+            mongoClient = MongoClients.create(CONNECTION_STRING); // Create the client if not already created
+        }
         return mongoClient.getDatabase(DATABASE_NAME);        // Return the database instance
     }
 

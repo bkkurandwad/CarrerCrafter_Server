@@ -11,7 +11,7 @@ public class CompilerService {
 
     public String compileCode(String code) {
         // Define the directory and file path
-        String directoryPath = "E:/Projects after Maersk/docker practice/First_project/server api/src";
+        String directoryPath = "src/main/resources";
         String filePath = directoryPath + "/main2.cpp";
 
         // Step 1: Ensure the directory exists
