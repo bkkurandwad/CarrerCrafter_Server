@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class ConfigMongoDB {
 
-    private static final String CONNECTION_STRING = "mongodb://localhost:27017";
+    private static final String CONNECTION_STRING = "mongo_db_url";
     private static final String DATABASE_NAME = "Career_Crafter";
 
     // Instance variable for MongoDB client
