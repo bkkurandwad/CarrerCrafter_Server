@@ -5,6 +5,16 @@ public class CompilerRequest {
     private String input;
     private String expectedOutput;
 
+    public String getLang() {
+        return lang;
+    }
+
+    public void setLang(String lang) {
+        this.lang = lang;
+    }
+
+    private String lang;
+
     // Getters and Setters
     public String getCode() {
         return code;

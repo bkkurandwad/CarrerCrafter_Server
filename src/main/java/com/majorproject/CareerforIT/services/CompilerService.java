@@ -7,10 +7,25 @@ import java.io.*;
 @Service
 public class CompilerService {
 
-    public String compileCode(String code) {
+
+    private static final String BASE_PATH = "/app/src/main/resources";
+    public String compileCode(String code, String lang) {
         // Define the directory and file path
         String directoryPath = "src/main/resources";
-        String filePath = directoryPath + "/main2.cpp";
+        String filename = "";
+        switch (lang){
+            case "c" : filename = "/main.cpp";
+                        break;
+            case "py" : filename = "/main.py";
+                        break;
+            case "java" : filename = "/main.java";
+                        break;
+            default: return "Lang Payload Error";
+
+        }
+
+        String filePath = directoryPath + filename;
+
 
         // Step 1: Ensure the directory exists
         File directory = new File(directoryPath);
@@ -29,51 +44,19 @@ public class CompilerService {
         }
         System.out.println(code + "\nWritten to file: " + filePath);
 
-        System.out.println(System.getProperty("user.dir"));
-
-        try {
-            // Create a ProcessBuilder for the "pwd" command
-            ProcessBuilder p1 = new ProcessBuilder("pwd");
-            Process process1 = p1.start();
-
-            // Capture the output of "pwd"
-            BufferedReader reader1 = new BufferedReader(new InputStreamReader(process1.getInputStream()));
-            String line1;
-            while ((line1 = reader1.readLine()) != null) {
-                System.out.println(line1);  // Print output of pwd
-            }
-
-            // Wait for the "pwd" process to finish
-            process1.waitFor();
-
-            // Create a ProcessBuilder for the "ls" command
-            ProcessBuilder p2 = new ProcessBuilder("ls");
-            Process process2 = p2.start();
-
-            // Capture the output of "ls"
-            BufferedReader reader2 = new BufferedReader(new InputStreamReader(process2.getInputStream()));
-            String line2;
-            while ((line2 = reader2.readLine()) != null) {
-                System.out.println(line2);  // Print output of ls
-            }
-
-            // Wait for the "ls" process to finish
-            process2.waitFor();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-
-
         // Step 3: Run Docker container with volume mounting
         try {
-            ProcessBuilder processBuilder = new ProcessBuilder(
-                    "bash", "-c",
-                    "g++ /app/src/main/resources/main2.cpp -o /app/src/main/resources/main2 && /app/src/main/resources/main2"// Compile and run inside container
-            );
+            String command = "";
+            if (lang.equals("c")) {
+                command = "g++ " + BASE_PATH + "/main.cpp -o " + BASE_PATH + "/main && " + BASE_PATH + "/main";
+            } else if (lang.equals("py")) {
+                command = "python3 " + BASE_PATH + "/main.py";
+            } else if (lang.equals("java")) {
+                command = "javac " + BASE_PATH + "/main.java && java -cp " + BASE_PATH + " main";
+            }
 
-            processBuilder.directory(new File("/app"));
+            ProcessBuilder processBuilder = new ProcessBuilder("bash", "-c", command);
+
             Process process = processBuilder.start();
 
             // Capture the standard output from the Docker container

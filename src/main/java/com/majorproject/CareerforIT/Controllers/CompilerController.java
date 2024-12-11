@@ -21,7 +21,8 @@ public class CompilerController {
     @PostMapping("/compile")
     public String compile(@RequestBody CompilerRequest compilerRequest) {
         String code = compilerRequest.getCode();
+        String lang = compilerRequest.getLang();
         // Delegate the logic to the service layer
-        return compilerService.compileCode(code);
+        return compilerService.compileCode(code, lang);
     }
 }
