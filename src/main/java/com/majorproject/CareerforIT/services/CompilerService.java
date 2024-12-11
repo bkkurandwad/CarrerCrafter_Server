@@ -38,6 +38,7 @@ public class CompilerService {
                     "g++ /src/main/resources/main2.cpp -o /src/main/resources/main2 && /src/main/resources/main2"// Compile and run inside container
             );
 
+            processBuilder.directory(new File("/app"));
             Process process = processBuilder.start();
 
             // Capture the standard output from the Docker container
