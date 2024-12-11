@@ -38,8 +38,6 @@ public class CompilerService {
                     "g++ /src/main2.cpp -o /src/main2 && /src/main2" // Compile and run inside container
             );
 
-            // Set the working directory to the mounted path inside the container
-            processBuilder.directory(new File("E:/Projects after Maersk/docker practice/First_project/server api/src"));
             Process process = processBuilder.start();
 
             // Capture the standard output from the Docker container
