@@ -34,10 +34,8 @@ public class CompilerService {
         // Step 3: Run Docker container with volume mounting
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(
-                    "docker", "run", "--rm",
-                    "-v", "E:/Projects after Maersk/docker practice/First_project/server api/src:/src", // Mount the directory
-                    "my-cpp-app:latest", // Docker image name
-                    "bash", "-c", "g++ /src/main2.cpp -o /src/main2 && /src/main2" // Compile and run inside container
+                    "bash", "-c",
+                    "g++ /src/main2.cpp -o /src/main2 && /src/main2" // Compile and run inside container
             );
 
             // Set the working directory to the mounted path inside the container
