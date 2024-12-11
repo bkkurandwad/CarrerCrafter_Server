@@ -70,7 +70,7 @@ public class CompilerService {
         try {
             ProcessBuilder processBuilder = new ProcessBuilder(
                     "bash", "-c",
-                    "g++ /src/main/resources/main2.cpp -o /src/main/resources/main2 && /src/main/resources/main2"// Compile and run inside container
+                    "g++ /app/src/main/resources/main2.cpp -o /app/src/main/resources/main2 && /app/src/main/resources/main2"// Compile and run inside container
             );
 
             processBuilder.directory(new File("/app"));
