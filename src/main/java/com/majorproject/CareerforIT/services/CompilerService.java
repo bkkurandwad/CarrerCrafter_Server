@@ -1,10 +1,8 @@
 package com.majorproject.CareerforIT.services;
 
 import org.springframework.stereotype.Service;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+
+import java.io.*;
 
 @Service
 public class CompilerService {
@@ -30,6 +28,43 @@ public class CompilerService {
             return "Error writing code to file: " + e.getMessage();
         }
         System.out.println(code + "\nWritten to file: " + filePath);
+
+        System.out.println(System.getProperty("user.dir"));
+
+        try {
+            // Create a ProcessBuilder for the "pwd" command
+            ProcessBuilder p1 = new ProcessBuilder("pwd");
+            Process process1 = p1.start();
+
+            // Capture the output of "pwd"
+            BufferedReader reader1 = new BufferedReader(new InputStreamReader(process1.getInputStream()));
+            String line1;
+            while ((line1 = reader1.readLine()) != null) {
+                System.out.println(line1);  // Print output of pwd
+            }
+
+            // Wait for the "pwd" process to finish
+            process1.waitFor();
+
+            // Create a ProcessBuilder for the "ls" command
+            ProcessBuilder p2 = new ProcessBuilder("ls");
+            Process process2 = p2.start();
+
+            // Capture the output of "ls"
+            BufferedReader reader2 = new BufferedReader(new InputStreamReader(process2.getInputStream()));
+            String line2;
+            while ((line2 = reader2.readLine()) != null) {
+                System.out.println(line2);  // Print output of ls
+            }
+
+            // Wait for the "ls" process to finish
+            process2.waitFor();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
 
         // Step 3: Run Docker container with volume mounting
         try {
