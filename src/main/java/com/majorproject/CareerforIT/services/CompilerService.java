@@ -1,14 +1,29 @@
 package com.majorproject.CareerforIT.services;
 
+import com.majorproject.CareerforIT.DTO.CodeShowRequest;
+import com.majorproject.CareerforIT.DTO.CodeShowResponse;
+import com.majorproject.CareerforIT.DTO.CodeSubmitRequest;
+import com.mongodb.client.MongoCollection;
+import org.bson.Document;
+import com.mongodb.client.MongoDatabase;
+import org.bson.types.Code;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CompilerService {
-
+    private final MongoCollection<Document> collection;
 
     private static final String BASE_PATH = "/app/src/main/resources";
+
+    public CompilerService(MongoDatabase mongoDatabase) {
+        this.collection = mongoDatabase.getCollection("code_submissions");
+    }
+
     public String compileCode(String code, String lang) {
         // Define the directory and file path
         String directoryPath = "src/main/resources";
@@ -85,4 +100,52 @@ public class CompilerService {
             return "Error running Docker container: " + e.getMessage();
         }
     }
+    public String submitCode (String username, CodeSubmitRequest req){
+        Document doc = new Document("username", username)
+                .append("ques_id", req.getQuesid()) //
+                .append("lang", req.getLang())
+                .append("code", req.getCode())
+                .append("result", req.getResult());
+
+        try {
+            // Insert the document into the MongoDB collection
+            collection.insertOne(doc);
+            // Log the inserted document for confirmation
+            System.out.println("Inserted document: {}"+ doc.toJson());
+            return "Code Submitted successfully";
+        } catch (Exception e) {
+            System.out.println("Error inserting document: "+ e);
+            return "Failed to submit the code";
+        }
+    }
+    public List<CodeShowResponse> get_codes (String username, CodeShowRequest show){
+        int quesid = show.getQuesid();
+        List<CodeShowResponse> responses = new ArrayList<>();
+
+        try {
+            // Create a query filter to find all matching documents
+            Document query = new Document("username", username)
+                    .append("ques_id", quesid);
+
+            // Fetch all matching documents
+            for (Document resultDoc : collection.find(query)) {
+                // Map each document to a CodeShowResponse object
+                CodeShowResponse showres = new CodeShowResponse();
+                showres.setQuesid(resultDoc.getInteger("ques_id"));
+                showres.setLang(resultDoc.getString("lang"));
+                showres.setCode(resultDoc.getString("code"));
+                showres.setResult(resultDoc.getString("result"));
+
+                // Add the response object to the list
+                responses.add(showres);
+            }
+
+            return responses;
+
+        } catch (Exception e) {
+            System.out.println("Error fetching code submissions: " + e.getMessage());
+            return null; // or return an empty list if preferred
+        }
+    }
+
 }
