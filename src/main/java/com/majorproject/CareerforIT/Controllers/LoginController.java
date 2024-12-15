@@ -27,9 +27,9 @@ public class LoginController {
 
     @PostMapping("/student")
     public LoginResponse auth(@RequestBody LoginRequest loginRequest) {
-        String email = loginRequest.getUsername(); // Username is the email
+        String username = loginRequest.getUsername(); // Username is the email
         String password = loginRequest.getPassword();
-        System.out.println("Received login request - Email: " + email + ", Password: " + password);
+        System.out.println("Received login request - Email: " + username + ", Password: " + password);
 
         String token = RequestContext.getJwtToken();
         if (token != null) {
@@ -40,7 +40,7 @@ public class LoginController {
         }
 
         // Query the database to find the user with the given email
-        Document userDoc = collection.find(new Document("email", email)).first();
+        Document userDoc = collection.find(new Document("username", username)).first();
 
         if (userDoc == null) {
             return new LoginResponse("User not found", null, null); // User not found
@@ -56,8 +56,8 @@ public class LoginController {
         String userId = userDoc.getObjectId("_id").toString();
 
         // Generate JWT tokens (Access Token & Refresh Token)
-        String accessToken = generateJwtToken(userId, email, 3600000); // Access token valid for 1 hour
-        String refreshToken = generateJwtToken(userId, email, 259200000); // Refresh token valid for 3 days
+        String accessToken = generateJwtToken(userId, username, 3600000); // Access token valid for 1 hour
+        String refreshToken = generateJwtToken(userId, username, 259200000); // Refresh token valid for 3 days
 
         return new LoginResponse("Login Successful", accessToken, refreshToken); // Return success message, access token, and refresh token
     }
