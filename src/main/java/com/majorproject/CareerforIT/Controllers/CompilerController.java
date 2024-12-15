@@ -33,7 +33,7 @@ public class CompilerController {
     }
 
     @PostMapping("/submit")
-    public String submit(@RequestHeader("Username") String username, @RequestBody CodeSubmitRequest codeSubmitRequest) {
+    public String submit(@RequestHeader("username") String username, @RequestBody CodeSubmitRequest codeSubmitRequest) {
         return compilerService.submitCode(username, codeSubmitRequest);
     }
 
