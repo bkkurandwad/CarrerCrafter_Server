@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = {"http://localhost:3000", "https://craft-career.netlify.app/"})
+@CrossOrigin(origins = "*")
 @RequestMapping("/ques")
 public class QuestionsController {
 
