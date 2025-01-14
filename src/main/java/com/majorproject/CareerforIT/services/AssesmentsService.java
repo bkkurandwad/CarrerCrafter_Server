@@ -1,5 +1,6 @@
 package com.majorproject.CareerforIT.services;
 
+import com.majorproject.CareerforIT.DTO.AssesmentQuestionResponse;
 import com.majorproject.CareerforIT.DTO.AssesmentResponse;
 import com.mongodb.client.MongoCollection;
 import org.bson.Document;
@@ -44,5 +45,33 @@ public class AssesmentsService {
             return new ArrayList<>(); // Return an empty list instead of null for better handling
         }
     }
+
+    public List<AssesmentQuestionResponse> getQuestionsForAssessment(int assignId) {
+        List<AssesmentQuestionResponse> questionResponses = new ArrayList<>();
+
+        try {
+            // Create a query to find the questions for the given assignment ID
+            Document query = new Document("assign_id", assignId);
+
+            // Fetch all matching documents
+            for (Document resultDoc : collection.find(query)) {
+                AssesmentQuestionResponse questionResponse = new AssesmentQuestionResponse();
+
+                questionResponse.setQuestionNo(resultDoc.getInteger("question_no"));
+                questionResponse.setQuestion(resultDoc.getString("question"));
+                questionResponse.setOptions((List<String>) resultDoc.get("options"));
+                questionResponse.setCorrectAnswer(resultDoc.getString("correct_answer"));
+
+                questionResponses.add(questionResponse);
+            }
+
+            return questionResponses;
+
+        } catch (Exception e) {
+            System.out.println("Error fetching questions: " + e.getMessage());
+            return new ArrayList<>(); // Return an empty list if there is an error
+        }
+    }
+
 }
 
