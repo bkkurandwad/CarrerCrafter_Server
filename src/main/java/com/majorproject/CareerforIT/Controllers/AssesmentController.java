@@ -24,7 +24,7 @@ public class AssesmentController {
         return res;
     }
 
-    @GetMapping("/questions")
+    @PostMapping("/questions")
     public List<AssesmentQuestionResponse> getQuestions(@RequestBody AssesQuestionRequest asqreq) {
        List<AssesmentQuestionResponse> questions = AssesService.getQuestionsForAssessment(asqreq.getAssignID());
         return questions;
