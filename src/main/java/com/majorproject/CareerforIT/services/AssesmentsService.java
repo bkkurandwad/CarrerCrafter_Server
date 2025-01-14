@@ -9,25 +9,29 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import com.mongodb.client.model.Filters;
 
 @Service
 public class AssesmentsService {
 
-    private final MongoCollection<Document> collection;
+    private final MongoCollection<Document> assesmentsCollection; // Collection for assesments
+    private final MongoCollection<Document> questionsCollection;   // Collection for Questions
 
+    // Constructor initializing both collections
     public AssesmentsService(MongoDatabase mongoDatabase) {
-        this.collection = mongoDatabase.getCollection("assesments");
+        this.assesmentsCollection = mongoDatabase.getCollection("assesments"); // Assesments collection
+        this.questionsCollection = mongoDatabase.getCollection("Questions"); // Questions collection
     }
 
-    public List<AssesmentResponse> getAssesments(){
+    // Fetch all assesments
+    public List<AssesmentResponse> getAssesments() {
         List<AssesmentResponse> responses = new ArrayList<>();
 
         try {
-            // Create a query filter to find all matching documents
-            Document query = new Document();
+            Document query = new Document(); // Empty query to fetch all documents
 
-            // Fetch all matching documents
-            for (Document resultDoc : collection.find(query)) {
+            // Fetch all documents from the assesments collection
+            for (Document resultDoc : assesmentsCollection.find(query)) {
                 AssesmentResponse showres = new AssesmentResponse();
 
                 showres.setId(resultDoc.getInteger("assign_id"));
@@ -46,32 +50,30 @@ public class AssesmentsService {
         }
     }
 
-    public List<AssesmentQuestionResponse> getQuestionsForAssessment(int assignId) {
-        List<AssesmentQuestionResponse> questionResponses = new ArrayList<>();
-
+    // Fetch questions for a specific assessment
+    public List<AssesmentQuestionResponse> getQuestionsForAssessment(Integer assignId) {
+        List<AssesmentQuestionResponse> questionList = new ArrayList<>();
         try {
-            // Create a query to find the questions for the given assignment ID
-            Document query = new Document("assign_id", assignId);
+            // Query the Questions collection for documents with the given assign_id
+            List<Document> questionDocs = questionsCollection.find(Filters.eq("assign_id", assignId)).into(new ArrayList<>());
 
-            // Fetch all matching documents
-            for (Document resultDoc : collection.find(query)) {
+            // Iterate over each question document retrieved
+            for (Document questionDoc : questionDocs) {
                 AssesmentQuestionResponse questionResponse = new AssesmentQuestionResponse();
-
-                questionResponse.setQuestionNo(resultDoc.getInteger("question_no"));
-                questionResponse.setQuestion(resultDoc.getString("question"));
-                questionResponse.setOptions((List<String>) resultDoc.get("options"));
-                questionResponse.setCorrectAnswer(resultDoc.getString("correct_answer"));
-
-                questionResponses.add(questionResponse);
+                questionResponse.setQuestionNo(questionDoc.getInteger("question_no"));
+                questionResponse.setQuestion(questionDoc.getString("question"));
+                questionResponse.setOptions((List<String>) questionDoc.get("options"));
+                questionResponse.setCorrectAnswer(questionDoc.getString("correct_answer"));
+                questionList.add(questionResponse);
             }
 
-            return questionResponses;
-
+            if (questionList.isEmpty()) {
+                throw new IllegalArgumentException("No questions found for assignId: " + assignId);
+            }
         } catch (Exception e) {
             System.out.println("Error fetching questions: " + e.getMessage());
-            return new ArrayList<>(); // Return an empty list if there is an error
         }
+        return questionList;
     }
 
 }
-

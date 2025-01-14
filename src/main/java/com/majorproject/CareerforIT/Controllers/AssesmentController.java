@@ -1,5 +1,6 @@
 package com.majorproject.CareerforIT.Controllers;
 
+import com.majorproject.CareerforIT.DTO.AssesQuestionRequest;
 import com.majorproject.CareerforIT.DTO.AssesmentQuestionResponse;
 import com.majorproject.CareerforIT.DTO.AssesmentResponse;
 import com.majorproject.CareerforIT.DTO.QuestionResponse;
@@ -23,9 +24,9 @@ public class AssesmentController {
         return res;
     }
 
-    @GetMapping("/questions/{assignId}")
-    public List<AssesmentQuestionResponse> getQuestions(@PathVariable int assignId) {
-        List<AssesmentQuestionResponse> questions = AssesService.getQuestionsForAssessment(assignId);
+    @GetMapping("/questions")
+    public List<AssesmentQuestionResponse> getQuestions(@RequestBody AssesQuestionRequest asqreq) {
+       List<AssesmentQuestionResponse> questions = AssesService.getQuestionsForAssessment(asqreq.getAssignID());
         return questions;
     }
 
