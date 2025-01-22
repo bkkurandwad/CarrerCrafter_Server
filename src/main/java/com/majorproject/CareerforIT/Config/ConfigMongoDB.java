@@ -4,13 +4,16 @@ import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
 import jakarta.annotation.PreDestroy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class ConfigMongoDB {
 
-    private static final String CONNECTION_STRING = "mongo_db_url";
+    @Value("${db_url}")
+    private String CONNECTION_STRING;
+
     private static final String DATABASE_NAME = "Career_Crafter";
 
     // Instance variable for MongoDB client
